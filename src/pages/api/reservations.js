@@ -1,9 +1,11 @@
 // pages/api/reservations.js
 
 import dbConnect from "../../utils/mydb";
+import corsMiddleware from "../../utils/cors";
 import Reservation from "../../models/Reservation";
 
 export default async function handler(req, res) {
+  await corsMiddleware(req, res);
   const {
     method,
     body,

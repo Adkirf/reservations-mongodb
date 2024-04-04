@@ -1,9 +1,11 @@
 // pages/api/tables.js
 
 import dbConnect from "../../utils/mydb";
+import corsMiddleware from "../../utils/cors";
 import Table from "../../models/Table";
 
 export default async function handler(req, res) {
+  await corsMiddleware(req, res);
   const {
     method,
     body,
