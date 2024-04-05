@@ -65,6 +65,21 @@ function TestDbComponent() {
     }
   };
 
+  const reload = async () => {
+    try {
+      const reponseReservations = await fetch("/api/reservations");
+      const newData = await reponseReservations.json();
+      console.log(data);
+      setData({
+        tables: data.tables,
+        users: data.users,
+        reservations: newData.data.length,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <h1>Database Connection Test</h1>
@@ -75,6 +90,8 @@ function TestDbComponent() {
       ) : (
         <p>Loading data...</p>
       )}
+
+      <div onClick={reload}>reload</div>
     </div>
   );
 }
