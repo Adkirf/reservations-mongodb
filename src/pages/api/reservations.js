@@ -1,14 +1,15 @@
 // pages/api/reservations.js
 
 import dbConnect from "../../utils/mydb";
-import corsMiddleware from "../../utils/cors";
 import Reservation from "../../models/Reservation";
+import User from "../../models/User";
+import Table from "../../models/Table";
+import mongoose from "mongoose";
 
 export default async function handler(req, res) {
-  /*   await corsMiddleware(req, res); */
   const {
     method,
-    body,
+    body: { email, name, peopleCount, reservationDate },
     query: { id },
   } = req;
 
@@ -30,49 +31,81 @@ export default async function handler(req, res) {
           res.status(200).json({ success: true, data: reservations });
         }
       } catch (error) {
-        res.status(500).json({ success: false, error: "Server Error" });
+        res
+          .status(500)
+          .json({ success: false, error: "Error in reservation GET" });
       }
       break;
     case "POST":
       try {
-        const reservation = await Reservation.create(body);
+        // Find or create user
+        let user = await User.findOne({ email });
+        if (!user) {
+          user = await User.create({ email, name });
+        }
+
+        const startDate = new Date(reservationDate);
+        const endDate = new Date(startDate.getTime() + 90 * 60000);
+
+        const capableTables = await Table.find({
+          capacity: { $gte: peopleCount },
+        });
+
+        const intersectingReservations = await Reservation.find({
+          $or: [
+            {
+              start: {
+                $gte: startDate,
+                $lte: endDate,
+              },
+            },
+            { end: { $gte: startDate, $lte: endDate } },
+          ],
+        });
+
+        const capableTableIds = capableTables.map((table) => table._id);
+
+        const intersectingTableIds = intersectingReservations.map(
+          (reservation) => reservation.tableId
+        );
+
+        const availableTables = capableTableIds
+          .filter((tableId) => !intersectingTableIds.includes(tableId))
+          .sort(
+            (a, b) =>
+              Math.abs(a.capacity - peopleCount) -
+              Math.abs(b.capacity - peopleCount)
+          );
+
+        if (availableTables.length === 0) {
+          return res.status(400).json({
+            success: false,
+            error: "No available table for the given time",
+          });
+        }
+
+        const reservation = await Reservation.create({
+          userId: user._id,
+          tableId: availableTables[0]._id,
+          peopleCount: peopleCount,
+          start: startDate,
+          end: endDate,
+        });
+
         res.status(201).json({ success: true, data: reservation });
       } catch (error) {
-        res.status(400).json({ success: false, error: "Invalid data" });
+        console.log("Sdkaskdaskdn");
+        console.error(error);
+        res
+          .status(400)
+          .json({ success: false, error: "Error in reservation POST" });
       }
       break;
     case "PUT":
-      try {
-        const updatedReservation = await Reservation.findByIdAndUpdate(
-          id,
-          body,
-          {
-            new: true,
-            runValidators: true,
-          }
-        );
-        if (!updatedReservation) {
-          return res
-            .status(404)
-            .json({ success: false, error: "Reservation not found" });
-        }
-        res.status(200).json({ success: true, data: updatedReservation });
-      } catch (error) {
-        res.status(400).json({ success: false, error: "Invalid data" });
-      }
+      // Your PUT logic
       break;
     case "DELETE":
-      try {
-        const deletedReservation = await Reservation.findByIdAndDelete(id);
-        if (!deletedReservation) {
-          return res
-            .status(404)
-            .json({ success: false, error: "Reservation not found" });
-        }
-        res.status(200).json({ success: true, data: {} });
-      } catch (error) {
-        res.status(500).json({ success: false, error: "Server Error" });
-      }
+      // Your DELETE logic
       break;
     default:
       res

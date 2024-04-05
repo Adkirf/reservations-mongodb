@@ -1,12 +1,9 @@
 // pages/api/users.js
 
 import dbConnect from "../../utils/mydb";
-import corsMiddleware from "../../utils/cors";
 import User from "../../models/User";
 
 export default async function handler(req, res) {
-  /*   await corsMiddleware(req, res); */
-
   const {
     method,
     body,
@@ -36,8 +33,6 @@ export default async function handler(req, res) {
       break;
     case "POST":
       try {
-        console.log("asdkasdbaskd");
-        console.log(body);
         const user = await User.create(body);
         res.status(201).json({ success: true, data: user });
       } catch (error) {

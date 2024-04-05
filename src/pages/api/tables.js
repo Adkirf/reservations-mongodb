@@ -1,17 +1,9 @@
 // pages/api/tables.js
 
 import dbConnect from "../../utils/mydb";
-import Cors from "cors";
 import Table from "../../models/Table";
 
-const corsMiddleware = Cors({
-  origin: true, // Allow requests from any origin
-  methods: ["GET", "POST", "PUT", "DELETE"], // Specify the allowed HTTP methods
-  allowedHeaders: ["Content-Type"], // Specify the allowed headers
-});
-
 export default async function handler(req, res) {
-  /*   await corsMiddleware(req, res); */
   const {
     method,
     body,

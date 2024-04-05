@@ -15,7 +15,6 @@ function TestDbComponent() {
     try {
       // Test GET /api/tables
       const tablesResponse = await axios.get(`${BASE_URL}/tables`);
-      console.log("GET /api/tables:", tablesResponse.data);
 
       const newTableData = {
         tableNumber: tablesResponse.data.data.length,
@@ -26,11 +25,9 @@ function TestDbComponent() {
         `${BASE_URL}/tables`,
         newTableData
       );
-      console.log("POST /api/tables:", createTableResponse.data);
 
       // Test GET /api/users
       const usersResponse = await axios.get(`${BASE_URL}/users`);
-      console.log("GET /api/users:", usersResponse.data);
 
       const newUserData = {
         email: "lsdkfds",
@@ -42,24 +39,27 @@ function TestDbComponent() {
         `${BASE_URL}/users`,
         newUserData
       );
-      console.log("POST /api/users:", createUserResponse.data);
 
       // Test GET /api/reservations
       const reservationsResponse = await axios.get(`${BASE_URL}/reservations`);
-      console.log("GET /api/reservations:", reservationsResponse.data);
 
       // Test POST /api/reservations
       const newReservationData = {
-        userId: usersResponse.data.data[0],
-        tableId: tablesResponse.data.data[0],
+        email: "asd",
+        name: "testUser",
         peopleCount: 4,
-        reservationTime: "2024-04-05T10:00:00.000Z",
+        reservationDate: "2024-04-05T10:00:00.000Z",
       };
       const createReservationResponse = await axios.post(
         `${BASE_URL}/reservations`,
         newReservationData
       );
-      console.log("POST /api/reservations:", createReservationResponse.data);
+
+      setData({
+        tables: tablesResponse.data.data.length,
+        users: usersResponse.data.data.length,
+        reservations: reservationsResponse.data.data.length,
+      });
     } catch (error) {
       console.log("Error in testDbComponent:", error);
     }

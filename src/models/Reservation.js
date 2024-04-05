@@ -17,7 +17,11 @@ const ReservationSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  reservationTime: {
+  start: {
+    type: Date,
+    required: true,
+  },
+  end: {
     type: Date,
     required: true,
   },
