@@ -5,7 +5,8 @@ import corsMiddleware from "../../utils/cors";
 import User from "../../models/User";
 
 export default async function handler(req, res) {
-  await corsMiddleware(req, res);
+  /*   await corsMiddleware(req, res); */
+
   const {
     method,
     body,
