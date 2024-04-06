@@ -7,8 +7,6 @@ import TestDbComponent from "@/components/TestDbComponent";
 import ReservationForm from "@/components/ReservationForm";
 
 const App = () => {
-  const { tables, reservations, users } = useContext(DataContext);
-
   return (
     <div className="w-screen h-screen bg-blue-200">
       <TestDbComponent />

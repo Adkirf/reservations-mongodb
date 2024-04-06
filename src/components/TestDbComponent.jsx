@@ -5,74 +5,30 @@ import axios from "axios";
 function TestDbComponent() {
   const [data, setData] = useState(null);
 
-  const BASE_URL = "http://localhost:3000/api";
-
-  const testEndpoints = async () => {
-    try {
-      // Test GET /api/tables
-      const tablesResponse = await axios.get(`${BASE_URL}/tables`);
-
-      const newTableData = {
-        tableNumber: tablesResponse.data.data.length,
-        capacity: 8,
-        group: 1,
-      };
-      const createTableResponse = await axios.post(
-        `${BASE_URL}/tables`,
-        newTableData
-      );
-
-      // Test GET /api/users
-      const usersResponse = await axios.get(`${BASE_URL}/users`);
-
-      const newUserData = {
-        email: "lsdkfds",
-        name: "tester",
-        phone: "21231123123",
-      };
-
-      const createUserResponse = await axios.post(
-        `${BASE_URL}/users`,
-        newUserData
-      );
-
-      // Test GET /api/reservations
-      const reservationsResponse = await axios.get(`${BASE_URL}/reservations`);
-
-      // Test POST /api/reservations
-      const newReservationData = {
-        email: "asd",
-        name: "testUser",
-        peopleCount: 4,
-        reservationDate: "2024-04-05T10:00:00.000Z",
-      };
-      const createReservationResponse = await axios.post(
-        `${BASE_URL}/reservations`,
-        newReservationData
-      );
-
-      setData({
-        tables: tablesResponse.data.data.length,
-        users: usersResponse.data.data.length,
-        reservations: reservationsResponse.data.data.length,
-      });
-    } catch (error) {
-      console.log("Error in testDbComponent:", error);
+  useEffect(() => {
+    if (!data) {
+      reload();
     }
-  };
+  });
 
   const reload = async () => {
     try {
-      const reponseReservations = await fetch("/api/reservations");
-      const newData = await reponseReservations.json();
-      console.log(newData);
+      console.log("reloading");
+      const tablesResponse = await fetch("/api/reservations");
+      const usersResponse = await fetch(`/api/users`);
+      const reservationsResponse = await fetch(`/api/reservations`);
+
+      const tables = (await tablesResponse.json()).data;
+      const users = (await usersResponse.json()).data;
+      const reservations = (await reservationsResponse.json()).data;
+
       setData({
-        tables: data ? data.tables : 0,
-        users: data ? data.users : 0,
-        reservations: newData.data.length,
+        tables: tables ? tables.length : "NaN",
+        users: users ? users.length : "NaN",
+        reservations: reservations ? reservations.length : "NaN",
       });
     } catch (error) {
-      console.log(error);
+      console.log("error while reloading testComponent", error);
     }
   };
 
@@ -88,7 +44,6 @@ function TestDbComponent() {
       )}
 
       <div onClick={reload}>reload</div>
-      <div onClick={testEndpoints}>test endpoints</div>
     </div>
   );
 }
