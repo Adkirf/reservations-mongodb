@@ -69,10 +69,10 @@ function TestDbComponent() {
     try {
       const reponseReservations = await fetch("/api/reservations");
       const newData = await reponseReservations.json();
-      console.log(data);
+      console.log(newData);
       setData({
-        tables: data.tables,
-        users: data.users,
+        tables: data ? data.tables : 0,
+        users: data ? data.users : 0,
         reservations: newData.data.length,
       });
     } catch (error) {
