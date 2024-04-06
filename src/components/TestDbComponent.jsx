@@ -88,7 +88,7 @@ function TestDbComponent() {
       )}
 
       <div onClick={reload}>reload</div>
-      <div onClick={reload}>test endpoints</div>
+      <div onClick={testEndpoints}>test endpoints</div>
     </div>
   );
 }
