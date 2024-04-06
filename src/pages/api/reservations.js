@@ -18,6 +18,7 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
+        res.setHeader("Cache-Control", "no-store, max-age=0");
         if (id) {
           const reservation = await Reservation.findById(id);
           if (!reservation) {

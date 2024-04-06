@@ -16,6 +16,7 @@ export default async function handler(req, res) {
     case "GET":
       try {
         if (id) {
+          res.setHeader("Cache-Control", "no-store, max-age=0");
           const user = await User.findById(id);
           if (!user) {
             return res
