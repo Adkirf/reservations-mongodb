@@ -7,10 +7,6 @@ function TestDbComponent() {
 
   const BASE_URL = "http://localhost:3000/api";
 
-  useEffect(() => {
-    testEndpoints();
-  }, []);
-
   const testEndpoints = async () => {
     try {
       // Test GET /api/tables
@@ -92,6 +88,7 @@ function TestDbComponent() {
       )}
 
       <div onClick={reload}>reload</div>
+      <div onClick={reload}>test endpoints</div>
     </div>
   );
 }
